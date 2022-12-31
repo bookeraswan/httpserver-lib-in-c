@@ -1,4 +1,4 @@
-#include "lib/server.h"
+#include "lib/Server.h"
 #include "routes/router.h"
 #include "./lib/LogColors.h"
 int main(){
