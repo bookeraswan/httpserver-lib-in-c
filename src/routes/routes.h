@@ -1,3 +1,4 @@
+#pragma once
 #include "routing-methods.h"
 
 #define NUM_ROUTES 3

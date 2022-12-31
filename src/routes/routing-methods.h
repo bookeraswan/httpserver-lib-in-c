@@ -1,3 +1,4 @@
+#pragma once
 #include <string.h>
 
 int request_count = 0;
