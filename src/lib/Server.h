@@ -2,22 +2,21 @@
 #include "str.h"
 #include "request.h"
 #include "response.h"
-#include "../routes/Router.h"
+#include "Router.h"
 // #include "printf_colors.h"
 
 
 
-#define SERVER_PORT 2000
 #define MAXLINE 4096
 #define SA struct sockaddr
 
 class Server{
+private:
+    int port;
 public:
-    // Server(void (*router)(Request, Response*)){
-    //     createServer(router);
-    // }
 
-    Server(Router* router){
+    Server(Router* router, int port){
+        this->port = port;
         createServer(router);
     }
 private:
@@ -25,13 +24,13 @@ void init_sockaddr_in(struct sockaddr_in* servaddr){
     bzero(servaddr, sizeof(*servaddr));
     servaddr->sin_family      = AF_INET;
     servaddr->sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr->sin_port        = htons(SERVER_PORT);
+    servaddr->sin_port        = htons(port);
 }
 
 void bind_and_listen(int listenfd, struct sockaddr_in  servaddr){
     bind(listenfd, (SA *) &servaddr, sizeof(servaddr));
     listen(listenfd, 12);
-    printf("Listening on port %d\n\n", SERVER_PORT);
+    printf("Listening on port %d\n\n", port);
 }
 
 int get_content_length(char line[]){
