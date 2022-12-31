@@ -32,72 +32,7 @@ Request request_parser(char* request_str){
     return request;
 }
 
-
-// long simplehash(char* word){
-//     int word_length = strlen(word);
-//     unsigned long hash = 0;
-//     for(int i = 1; i <= word_length; i++){
-//         hash += floor(pow((double)word[i] + (double)i, (double)i));
-//     }
-//     return hash;
-// }
-
-// struct token{
-//     char text[100];
-// };
-
-
-// void list(char* request_str, struct token* request_parts[]){
-//     int request_str_len = strlen(request_str);
-//     for(int i = 0; i < 50; i++){
-//         struct token* newToken = (struct token*)malloc(sizeof(struct token));
-//         request_parts[i] = newToken;
-//     }
-//     int token_idx = 0;
-//     for(int i = 0; i < request_str_len; i++){
-//         if(request_str[i] == ' ' || request_str[i] == '\n'){
-//             token_idx++;
-//         }
-//         else{
-//             char temp[1];
-//             temp[0] = request_str[i];
-//             strcat(request_parts[token_idx]->text, temp);
-//         }
-//     }
-    
-//     for(int i = 0; i < 50; i++){
-//         if(request_parts[i]->text[0] == '\0') break;
-//         printf("Token:\t");
-//         printf("%s\n", request_parts[i]->text);
-//     }
-// }
-
-
-
-// Request request_parser(char* request_str){
-//     Request request;
-//     struct token* request_parts[50];
-//     printf("%s = %ld", "Host", simplehash("Host"));
-//     list(request_str, request_parts);
-//     for(int i = 0; i < 50; i++){
-//         if(request_parts[i]->text[0] == '\0') break;
-//         request_parts[i]->text;
-//         // switch (expression)
-//         // {
-//         // case /* constant-expression */:
-//         //     /* code */
-//         //     break;
-        
-//         // default:
-//         //     break;
-//         // }
-//     }
-
-//     return request;
-// }
-
 #endif
-
 
 // /*
 

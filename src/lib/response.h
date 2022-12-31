@@ -15,8 +15,6 @@ void send_txt(Response* response, char* message){
     str_append(&response->message, message);
 }
 
-
-
 void send_file(Response* response, const char* file_name){
     FILE * fp = fopen(file_name, "r");
     char line[FILE_LINE_SIZE];
