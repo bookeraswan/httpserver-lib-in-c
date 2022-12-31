@@ -2,7 +2,7 @@
 #include "str.h"
 #include "request.h"
 #include "response.h"
-#include "printf_colors.h"
+// #include "printf_colors.h"
 
 
 
@@ -10,6 +10,12 @@
 #define MAXLINE 4096
 #define SA struct sockaddr
 
+class Server{
+public:
+    Server(void (*router)(Request, Response*)){
+        createServer(router);
+    }
+private:
 void init_sockaddr_in(struct sockaddr_in* servaddr){
     bzero(servaddr, sizeof(*servaddr));
     servaddr->sin_family      = AF_INET;
@@ -41,7 +47,7 @@ str get_request_data(int connection_socket){
         memset(recvline, 0, MAXLINE);
         int n = read(connection_socket, recvline, MAXLINE-1);
         str_append(&request_str, recvline);
-        printf_color1(P_BLU, "%s", request_str);
+        //printf_color1(P_BLU, "%s", request_str);
         return request_str;
 }
 
@@ -55,7 +61,7 @@ void infinite_server_loop(int listenfd, void (*router)(Request, Response*)){
         if(strlen(request_str) == 0) continue;
         Request request   = request_parser(request_str);
         free(request_str);
-        printf_color2(P_GRN, "{method: \"%s\", url: \"%s\"}\n", request.method, request.url);
+        //printf_color2(P_GRN, "{method: \"%s\", url: \"%s\"}\n", request.method, request.url);
         Response response;
         response.message = str_create("");
         router(request, &response);
@@ -78,3 +84,5 @@ void createServer(void (*router)(Request, Response*)){
     infinite_server_loop(listenfd, router);
     close(listenfd);
 }
+
+};

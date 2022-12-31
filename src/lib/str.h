@@ -5,7 +5,7 @@
 
 typedef char* str;
 
-str str_create(char *chararr){
+str str_create(const char *chararr){
     int char_count = 0;
     while(chararr[char_count] != 0){
         char_count++;
@@ -35,7 +35,7 @@ void str_append(str* original_string, char* added_string){
     }
 }
 
-int str_get_idx(char search[], size_t length, char raw_string[]){
+int str_get_idx(const char search[], size_t length, char raw_string[]){
     char buff;
     int i = 0;
     do{

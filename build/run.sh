@@ -1,2 +1,2 @@
-gcc ../src/main.c -o ./server
+g++ ../src/main.cpp -o ./server
 ./server

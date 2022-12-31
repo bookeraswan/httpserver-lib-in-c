@@ -15,7 +15,7 @@ void counter(Request req, Response* res){
 
 void route_404 (Request req, Response* res){
     char message[50] = "<h1>404 Route \"";
-    char* endofmessage = "\" not found :(</h1>";
+    const char* endofmessage = "\" not found :(</h1>";
     strcat(message, req.url);
     strcat(message, endofmessage);
     send_txt(res, message);
