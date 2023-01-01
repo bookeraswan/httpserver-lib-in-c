@@ -6,7 +6,7 @@
 #include "str.h"
 
 #define MAX_METHOD_LEN 6
-#define MAX_URL_LEN 20
+#define MAX_URL_LEN 50
 
 typedef struct{
     char  method[MAX_METHOD_LEN];

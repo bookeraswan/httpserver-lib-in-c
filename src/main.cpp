@@ -3,6 +3,8 @@
 #include "./lib/LogColors.h"
 int main(){
     Router* router = new Router();
+    
+    router->routePublicDirectory("./public");
 
     router->get("/", [](Request req, Response* res){
         send_file(res, "./public/index.html");
