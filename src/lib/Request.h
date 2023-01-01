@@ -22,12 +22,16 @@ class Request{
         class Query{
             private:
                 std::unordered_map<std::string, std::string> query;
+                std::string queryString;
                 void add(std::string key, std::string value){
                     query[stringReplaceAll(key, "%20", " ")] = stringReplaceAll(value, "%20", " ");
                     // query[key] = value;
                 }
             public:
             Query(std::string queryString){
+                this->queryString = queryString;
+            }
+            void parse(){
                 std::string keyAcc;
                 std::string valueAcc;
                 bool isKey = true;
@@ -60,6 +64,10 @@ class Request{
                 else return "";
             }
 
+            std::string getText(){
+                return queryString;
+            }
+
             void print(){
                 for(auto item :  query){
                     LogColors::print(LogColors::YELLOW, item.first, ":", item.second);
@@ -70,6 +78,8 @@ class Request{
         Method method;
         std::string url;
         Query* query;
+        Query* body;
+        std::unordered_map<std::string, std::string> headerFields;
         bool isBadRequestBool;
     public:
         Request(char* request_str){
@@ -79,8 +89,39 @@ class Request{
             LogColors::print(LogColors::YELLOW, "___________________________________");
             request_parser(request_str);
         }
-    
-        void request_parser(char* request_str){
+
+        void request_parser(std::string request_str){
+            std::vector<std::string> requestArr = stringSplit(request_str, "\n");
+            parseRequestLine(requestArr[0]);
+            bool inBody = false;;
+            std::string bodyString;
+            for(int i = 1; i < requestArr.size(); i++){
+                // LogColors::print(LogColors::YELLOW, "++++++++++++++++++++++++++++++++++++");
+                if(requestArr[i].compare("\r") == 0 || requestArr[i].compare("") == 0){
+                    inBody = true;
+                    continue;
+                }
+
+                if(!inBody){
+                    std::vector<std::string> headerRow = stringSplitAtFirst(requestArr[i], ":");
+                    std::string value = headerRow[1];
+                    if(value.size() > 0 && value[0] == ' '){
+                        value.erase(value.begin(), value.begin()+1);
+                    }
+                    headerFields[headerRow[0]] = value;
+                }
+                else{
+                    bodyString += requestArr[i];
+                }
+                // LogColors::print(LogColors::RED, "Key: ", headerRow[0]);
+                // LogColors::print(LogColors::GREEN, "Value: ", headerRow[1]);
+                // LogColors::print(LogColors::BLUE, ".");
+                // LogColors::print(LogColors::YELLOW, "++++++++++++++++++++++++++++++++++++");
+            }
+            this->body = new Query(bodyString);
+        }
+
+        void parseRequestLine(std::string request_str){
             std::string methodStr;
             int i;
             for(i = 0; i < MAX_METHOD_LEN; i++){
@@ -151,6 +192,17 @@ class Request{
 
         Query* getQuery(){
             return query;
+        }
+
+        Query* getBody(){
+            return body;
+        }
+
+        std::string getHeader(std::string key){
+            if(headerFields.count(key) == 1){
+                return headerFields.at(key);
+            }
+            else return "";
         }
 };
 
