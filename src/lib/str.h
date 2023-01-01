@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <vector>
 
 typedef char* str;
 
@@ -65,6 +66,29 @@ std::string stringReplaceAll(std::string original, std::string from, std::string
         }
         else output += original[i];
     }
+    return output;
+}
+
+std::vector<std::string> stringSplitAtFirst(std::string s, std::string delimiter){
+    std::vector<std::string> output = std::vector<std::string>();
+    size_t pos = s.find(delimiter);
+    std::string token = s.substr(0, pos);
+    output.push_back(token);
+    s.erase(0, pos + delimiter.length());
+    output.push_back(s);
+    return output;
+}
+
+std::vector<std::string> stringSplit(std::string s, std::string delimiter){
+    size_t pos = 0;
+    std::string token;
+    std::vector<std::string> output = std::vector<std::string>();
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        token = s.substr(0, pos);
+        output.push_back(token);
+        s.erase(0, pos + delimiter.length());
+    }
+    output.push_back(s);
     return output;
 }
 
