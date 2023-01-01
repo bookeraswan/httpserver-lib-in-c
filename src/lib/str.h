@@ -2,6 +2,7 @@
 #define DYNAMIC_STR
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 
 typedef char* str;
 
@@ -43,6 +44,28 @@ int str_get_idx(const char search[], size_t length, char raw_string[]){
         i++;
     }while(raw_string[i] != 0);
     return -1;
+}
+
+std::string stringReplaceAll(std::string original, std::string from, std::string to){
+    std::string output;
+    for(int i = 0; i < original.size(); i++){
+        bool found = true;
+        int j;
+        for(j = 0; j < from.size(); j++){
+            if(i+j >= original.size()){
+                break;
+            }
+            if(original[i+j] != from[j]){
+                found = false;
+            }
+        }
+        if(found){
+            output += to;
+            i += j-1;
+        }
+        else output += original[i];
+    }
+    return output;
 }
 
 #endif

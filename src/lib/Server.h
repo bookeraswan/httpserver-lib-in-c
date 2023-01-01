@@ -1,5 +1,6 @@
 #include "common.h"
 #include "str.h"
+#include "LogColors.h"
 #include "Request.h"
 #include "Response.h"
 #include "Router.h"
@@ -47,6 +48,21 @@ str get_request_data(int connection_socket){
         char recvline[MAXLINE+1];
         memset(recvline, 0, MAXLINE);
         int n = read(connection_socket, recvline, MAXLINE-1);
+        for(int i = 0; i < n; i++){
+            if(recvline[i] == EOF){
+                LogColors::print(LogColors::RED, "Found EOF");
+            }
+            // LogColors::print(LogColors::RED, i, ": ", recvline[i], ",");
+        }
+    //     LogColors::print(LogColors::RED, n);
+    //     // while(n > 0){
+    //         n = read(connection_socket, recvline, MAXLINE-1);
+    //     LogColors::print(LogColors::RED, n);
+    // n = read(connection_socket, recvline, MAXLINE-1);
+    //     LogColors::print(LogColors::RED, n);
+    //         n = read(connection_socket, recvline, MAXLINE-1);
+    //     LogColors::print(LogColors::RED, n);
+        // }
         str_append(&request_str, recvline);
         return request_str;
 }
