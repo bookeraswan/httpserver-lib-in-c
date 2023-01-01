@@ -1,13 +1,13 @@
 #pragma once
 #include <functional>
-#include "request.h"
+#include "Request.h"
 #include "response.h"
 #include "LogColors.h"
 #include "FileSystemTraversal.h"
 
 class Router{
     private:
-        std::unordered_map<std::string, std::function <void (Request, Response*)>> routes;
+        std::unordered_map<std::string, std::function <void (Request*, Response*)>> routes;
     public:
         enum Method{
             GET,
@@ -18,17 +18,14 @@ class Router{
         Router(){
 
         }
-        void router(Request req, Response* res){
+        void router(Request* req, Response* res){
             try{
-                std::string m = req.method;
-                std::string u = req.url;
-                std::cout << m+" "+u << std::endl;
-                routes.at(m+" "+u)(req, res);
+                routes.at(req->getMethod()+" "+req->getUrl())(req, res);
             }
             catch(const std::out_of_range& oor){ // This will occur if the route does not exist
                 char message[50] = "<h1>404 Route \"";
                 const char* endofmessage = "\" not found :(</h1>";
-                strcat(message, req.url);
+                strcat(message, req->getUrl().c_str());
                 strcat(message, endofmessage);
                 send_txt(res, message);
             };
@@ -59,24 +56,24 @@ class Router{
             
         // }
 
-        void get(std::string url, std::function <void (Request, Response*)> logic){
+        void get(std::string url, std::function <void (Request*, Response*)> logic){
             routes["GET " + url] = logic;
         }
 
-        void post(std::string url, std::function <void (Request, Response*)> logic){
+        void post(std::string url, std::function <void (Request*, Response*)> logic){
             routes["POST " + url] = logic;
         }
 
-        void put(std::string url, std::function <void (Request, Response*)> logic){
+        void put(std::string url, std::function <void (Request*, Response*)> logic){
             routes["PUT " + url] = logic;
         }
 
-        void del(std::string url, std::function <void (Request, Response*)> logic){
+        void del(std::string url, std::function <void (Request*, Response*)> logic){
             routes["DELETE " + url] = logic;
         }
 
         void routeFile(std::string url, std::string fileName){
-            get(url, [fileName](Request req, Response* res){
+            get(url, [fileName](Request* req, Response* res){
                 send_file(res, fileName.c_str());
             });
         }

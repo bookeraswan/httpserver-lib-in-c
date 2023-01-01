@@ -6,11 +6,11 @@ int main(){
     
     router->routePublicDirectory("./public");
 
-    router->get("/", [](Request req, Response* res){
+    router->get("/", [](Request* req, Response* res){
         send_file(res, "./public/index.html");
     });
 
-    router->get("/third", [](Request req, Response* res){
+    router->get("/third", [](Request* req, Response* res){
         send_file(res, "./public/second.html");
     });
 

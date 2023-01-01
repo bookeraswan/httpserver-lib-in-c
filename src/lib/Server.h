@@ -1,6 +1,6 @@
 #include "common.h"
 #include "str.h"
-#include "request.h"
+#include "Request.h"
 #include "response.h"
 #include "Router.h"
 
@@ -59,7 +59,7 @@ void infinite_server_loop(int listenfd, Router* router){
         printf("\t----REQUEST BEGINNING----\n\n");
         str request_str   = get_request_data(connection_socket);
         if(strlen(request_str) == 0) continue;
-        Request request   = request_parser(request_str);
+        Request* request   = new Request(request_str);
         free(request_str);
         Response response;
         response.message = str_create("");
