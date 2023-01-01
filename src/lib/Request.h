@@ -10,29 +10,77 @@
 
 
 class Request{
+    public:
+        enum Method{
+            GET,
+            POST,
+            PUT,
+            DELETE
+        };
     private:
-        std::string method;
+        Method method;
         std::string url;
+        bool isBadRequestBool;
     public:
         Request(char* request_str){
+            isBadRequestBool = false;
             request_parser(request_str);
         }
     
         void request_parser(char* request_str){
+            std::string methodStr;
             int i;
             for(i = 0; i < MAX_METHOD_LEN; i++){
                 if(request_str[i] == ' ') break;
-                method += request_str[i];
+                methodStr += toupper(request_str[i]);
             }
             for(int j = 0; j < MAX_URL_LEN; j++){
                 i++;
                 if(request_str[i] == ' ' || request_str[i] == '?') break;
-                url += request_str[i];
+                url += tolower(request_str[i]);
+            }
+            if(methodStr == "GET"){
+                method = GET;
+            }
+            else if(methodStr == "POST"){
+                method = POST;
+            }
+            else if(methodStr == "PUT"){
+                method = PUT;
+            }
+            else if(methodStr == "DELETE"){
+                method = DELETE;
+            }
+            else{
+                isBadRequestBool = true;
             }
         }
 
-        std::string getMethod(){
+        bool isBadRequest(){
+            return isBadRequestBool;
+        }
+
+        Method getMethod(){
             return method;
+        }
+
+        std::string getMethodString(){
+            std::string methodStr;
+            switch (method){
+                case GET:
+                    methodStr = "GET";
+                    break;
+                case POST:
+                    methodStr = "POST";
+                    break;
+                case PUT:
+                    methodStr = "PUT";
+                    break;
+                case DELETE:
+                    methodStr = "DELETE";
+                    break;
+            }
+            return methodStr;
         }
 
         std::string getUrl(){

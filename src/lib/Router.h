@@ -9,48 +9,17 @@ class Router{
     private:
         std::unordered_map<std::string, std::function <void (Request*, Response*)>> routes;
     public:
-        enum Method{
-            GET,
-            POST,
-            PUT,
-            DELETE
-        };
         Router(){
 
         }
         void router(Request* req, Response* res){
             try{
-                routes.at(req->getMethod()+" "+req->getUrl())(req, res);
+                routes.at(req->getMethodString()+" "+req->getUrl())(req, res);
             }
             catch(const std::out_of_range& oor){ // This will occur if the route does not exist
                 res->send_txt("<h1>404 Route \"" + req->getUrl() + "\" not found :(</h1>");
             };
         }
-
-        // void createRoute(Method method, std::string url, std::function <void (Request, Response*)> logic){
-        //     std::string methodStr;
-        //     switch (method)
-        //     {
-        //     case GET:
-        //         methodStr = "GET";
-        //         break;
-        //     case POST:
-        //         methodStr = "POST";
-        //         break;
-        //     case PUT:
-        //         methodStr = "PUT";
-        //         break;
-        //     case DELETE:
-        //         methodStr = "DELETE";
-        //         break;
-        //     default:
-        //         methodStr = "GET";
-        //         break;
-        //     }
-
-        //     routes[methodStr + " " + url] = logic;
-            
-        // }
 
         void get(std::string url, std::function <void (Request*, Response*)> logic){
             routes["GET " + url] = logic;

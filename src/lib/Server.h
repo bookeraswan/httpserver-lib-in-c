@@ -61,6 +61,13 @@ void infinite_server_loop(int listenfd, Router* router){
         if(strlen(request_str) == 0) continue;
         Request* request   = new Request(request_str);
         free(request_str);
+        if(request->isBadRequest()){
+            snprintf(buff, sizeof(buff), "HTTP/1.1 400 Bad Request\r\n\r\n");
+            write(connection_socket, buff, strlen(buff));
+            printf("\n\t----REQUEST END, Request Was Bad----\n\n");
+            close(connection_socket);
+            break;
+        }
         Response* response = new Response();
         router->router(request, response);
         snprintf(buff, sizeof(buff), "HTTP/1.1 %s\r\n\r\n%s", response->getStatus().c_str(), response->getMessage().c_str());
