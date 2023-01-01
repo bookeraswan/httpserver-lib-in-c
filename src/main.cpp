@@ -7,11 +7,11 @@ int main(){
     router->routePublicDirectory("./public");
 
     router->get("/", [](Request* req, Response* res){
-        send_file(res, "./public/index.html");
+        res->send_file("./public/index.html");
     });
 
     router->get("/third", [](Request* req, Response* res){
-        send_file(res, "./public/second.html");
+        res->send_file("./public/second.html");
     });
 
     new Server(router, 8080);

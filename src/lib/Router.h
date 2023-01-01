@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include "Request.h"
-#include "response.h"
+#include "Response.h"
 #include "LogColors.h"
 #include "FileSystemTraversal.h"
 
@@ -23,11 +23,7 @@ class Router{
                 routes.at(req->getMethod()+" "+req->getUrl())(req, res);
             }
             catch(const std::out_of_range& oor){ // This will occur if the route does not exist
-                char message[50] = "<h1>404 Route \"";
-                const char* endofmessage = "\" not found :(</h1>";
-                strcat(message, req->getUrl().c_str());
-                strcat(message, endofmessage);
-                send_txt(res, message);
+                res->send_txt("<h1>404 Route \"" + req->getUrl() + "\" not found :(</h1>");
             };
         }
 
@@ -74,7 +70,7 @@ class Router{
 
         void routeFile(std::string url, std::string fileName){
             get(url, [fileName](Request* req, Response* res){
-                send_file(res, fileName.c_str());
+                res->send_file(fileName);
             });
         }
 

@@ -1,7 +1,7 @@
 #include "common.h"
 #include "str.h"
 #include "Request.h"
-#include "response.h"
+#include "Response.h"
 #include "Router.h"
 
 #define MAXLINE 4096
@@ -61,12 +61,10 @@ void infinite_server_loop(int listenfd, Router* router){
         if(strlen(request_str) == 0) continue;
         Request* request   = new Request(request_str);
         free(request_str);
-        Response response;
-        response.message = str_create("");
-        router->router(request, &response);
-        snprintf(buff, sizeof(buff), "HTTP/1.1 200 OK\r\n\r\n%s", response.message);
+        Response* response = new Response();
+        router->router(request, response);
+        snprintf(buff, sizeof(buff), "HTTP/1.1 %s\r\n\r\n%s", response->getStatus().c_str(), response->getMessage().c_str());
         write(connection_socket, buff, strlen(buff));
-        free(response.message);
         printf("\n\t----REQUEST END----\n\n");
         close(connection_socket);
     }
