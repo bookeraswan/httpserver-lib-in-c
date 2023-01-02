@@ -40,5 +40,5 @@ int main(){
         res->send_txt("<h1>Hi "+auth->getSessionUser(req)+", you are logged in.</h1>");
     });
     
-    new Server(router, 8088);
+    new Server(router, 8080);
 }
