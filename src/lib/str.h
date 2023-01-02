@@ -4,6 +4,7 @@
 #include <string.h>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 typedef char* str;
 
@@ -93,5 +94,32 @@ namespace stringMethods{
         output.push_back(s);
         return output;
     }
+
+    bool isSpaceTypeChar(char c){
+        return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+    }
+
+    std::string stripLeft(std::string s){
+        std::string strn = s;
+        while(strn.size() > 0 && isSpaceTypeChar(strn[0])){
+            strn.erase(strn.begin(), strn.begin() + 1);
+        }
+        return strn;
+    }
+
+    std::string stripRight(std::string s){
+        std::string strn = s;
+        while(strn.size() > 0 && isSpaceTypeChar(strn[strn.size()-1])){
+            strn.erase(strn.end()-1, strn.end());
+        }
+        return strn;
+    }
+
+    std::string strip(std::string s){
+        std::string strn = stripRight(s);
+        return stripLeft(strn);
+    }
+
 }
+
 #endif
