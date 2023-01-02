@@ -120,6 +120,14 @@ namespace stringMethods{
         return stripLeft(strn);
     }
 
+    std::string toLowerCase(std::string s){
+        std::string strn;
+        for(char chr : s){
+            strn += tolower(chr);
+        }
+        return strn;
+    }
+
 }
 
 #endif
