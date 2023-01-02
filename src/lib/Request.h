@@ -6,6 +6,10 @@
 #include <unordered_map>
 #include "str.h"
 #include "LogColors.h"
+#include "./MapWrap/Query.hpp"
+#include "./MapWrap/Cookie.hpp"
+#include "./MapWrap/Header.hpp"
+#include "./MapWrap/Body.hpp"
 
 #define MAX_METHOD_LEN 6
 #define MAX_URL_LEN 50
@@ -19,12 +23,13 @@ class Request{
             PUT,
             DELETE
         };
+        /*
         class Query{
             private:
                 std::unordered_map<std::string, std::string> query;
                 std::string queryString;
                 void add(std::string key, std::string value){
-                    query[stringReplaceAll(key, "%20", " ")] = stringReplaceAll(value, "%20", " ");
+                    query[stringMethods::stringReplaceAll(key, "%20", " ")] = stringMethods::stringReplaceAll(value, "%20", " ");
                     // query[key] = value;
                 }
             public:
@@ -74,11 +79,14 @@ class Request{
                 }
             }
         };
+        */
     private:
         Method method;
         std::string url;
         Query* query;
-        Query* body;
+        Body* body;
+        Header* header;
+        Cookie* cookie;
         std::unordered_map<std::string, std::string> headerFields;
         bool isBadRequestBool;
     public:
@@ -88,37 +96,27 @@ class Request{
             LogColors::print(LogColors::MAGENTA, request_str);
             LogColors::print(LogColors::YELLOW, "___________________________________");
             request_parser(request_str);
+
         }
 
         void request_parser(std::string request_str){
             std::vector<std::string> requestArr = stringMethods::stringSplit(request_str, "\n");
             parseRequestLine(requestArr[0]);
+            this->header = new Header(request_str);
             bool inBody = false;;
             std::string bodyString;
             for(int i = 1; i < requestArr.size(); i++){
-                // LogColors::print(LogColors::YELLOW, "++++++++++++++++++++++++++++++++++++");
                 if(requestArr[i].compare("\r") == 0 || requestArr[i].compare("") == 0){
                     inBody = true;
                     continue;
                 }
-
-                if(!inBody){
-                    std::vector<std::string> headerRow = stringSplitAtFirst(requestArr[i], ":");
-                    std::string value = headerRow[1];
-                    if(value.size() > 0 && value[0] == ' '){
-                        value.erase(value.begin(), value.begin()+1);
-                    }
-                    headerFields[headerRow[0]] = value;
-                }
-                else{
+                if(inBody){
                     bodyString += requestArr[i];
                 }
-                // LogColors::print(LogColors::RED, "Key: ", headerRow[0]);
-                // LogColors::print(LogColors::GREEN, "Value: ", headerRow[1]);
-                // LogColors::print(LogColors::BLUE, ".");
-                // LogColors::print(LogColors::YELLOW, "++++++++++++++++++++++++++++++++++++");
             }
-            this->body = new Query(bodyString);
+            this->body = new Body(bodyString);
+            this->header->parse();
+            this->cookie = header->getCookie();
         }
 
         void parseRequestLine(std::string request_str){
@@ -141,6 +139,10 @@ class Request{
                     i++;
                 }
                 this->query = new Query(queryStr);
+                this->query->parse();
+            }
+            else{
+                this->query = new Query("");
             }
             if(methodStr == "GET"){
                 method = GET;
@@ -194,15 +196,16 @@ class Request{
             return query;
         }
 
-        Query* getBody(){
+        Body* getBody(){
             return body;
         }
 
-        std::string getHeader(std::string key){
-            if(headerFields.count(key) == 1){
-                return headerFields.at(key);
-            }
-            else return "";
+        Cookie* getCookie(){
+            return cookie;
+        }
+
+        Header* getHeader(){
+            return header;
         }
 };
 
