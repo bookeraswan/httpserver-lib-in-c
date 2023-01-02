@@ -3,6 +3,9 @@
 #include "./lib/LogColors.h"
 
 int main(){
+    std::unordered_map<std::string, std::string> users;
+    std::unordered_map<std::string, std::string> sessions;
+
     Router* router = new Router();
     
     router->routePublicDirectory("./public");
@@ -11,17 +14,30 @@ int main(){
         res->send_file("./public/index.html");
     });
 
-    router->post("/signup", [](Request* req, Response* res){
+    router->routeFile("/signup", "./public/signup.html");
+    router->routeFile("/login", "./public/login.html");
+
+    router->post("/signup", [&users, &sessions](Request* req, Response* res){
         req->getBody()->parse();
-        LogColors::print(LogColors::BLUE, "Query");
-        req->getQuery()->printContense();
-        LogColors::print(LogColors::BLUE, "Header");
-        req->getHeader()->printContense();
-        LogColors::print(LogColors::BLUE, "Body");
-        req->getBody()->printContense();
-        LogColors::print(LogColors::BLUE, "Cookies");
-        req->getCookie()->printContense();
-        res->send_txt("Hello " + req->getBody()->getValue("username"));
+        std::string u = req->getBody()->getValue("username");
+        std::string p = req->getBody()->getValue("password");
+        users[u] = p;
+        sessions[u+p] = u;
+        // res->redirect("/later");
+        res->send_txt("<script>document.cookie = 'unsession="+u+p+"';window.location = '/me';</script>");
+    });
+
+    router->post("/login", [&users, &sessions](Request* req, Response* res){
+        req->getBody()->parse();
+        std::string u = req->getBody()->getValue("username");
+        std::string p = req->getBody()->getValue("password");
+        if(users.count(u) == 1){
+            if(p == users.at(u)){
+                res->send_txt("<script>document.cookie = 'unsession="+u+p+"';window.location = '/me';</script>");
+                return;
+            }
+        }
+        res->redirect("/login");
     });
 
     router->get("/third", [](Request* req, Response* res){
@@ -29,5 +45,16 @@ int main(){
         res->send_file("./public/second.html");
     });
 
-    new Server(router, 8083);
+    router->get("/me", [&sessions](Request* req, Response* res){
+        std::string session = req->getCookie()->getValue("unsession");
+        if(session != ""){
+            if(sessions.count(session) == 1){
+                res->send_txt("<h1>Hi "+sessions.at(session)+", you are logged in.</h1>");
+                return;
+            }
+        }
+        res->send_txt("<h1>Error: Login or Signup</h1>");
+    });
+    
+    new Server(router, 8080);
 }
