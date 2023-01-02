@@ -19,6 +19,7 @@ class Response{
 
         Response(){
             this->status = "200 OK";
+            this->fileBytes = nullptr;
             this->size = 0;
         }
 
@@ -146,6 +147,8 @@ class Response{
         }
 
         ~Response(){
-            delete fileBytes;
+            if(fileBytes != nullptr){
+                delete fileBytes;
+            }
         }
 };
