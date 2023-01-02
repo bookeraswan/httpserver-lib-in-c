@@ -91,7 +91,7 @@ class Request{
         }
 
         void request_parser(std::string request_str){
-            std::vector<std::string> requestArr = stringSplit(request_str, "\n");
+            std::vector<std::string> requestArr = stringMethods::stringSplit(request_str, "\n");
             parseRequestLine(requestArr[0]);
             bool inBody = false;;
             std::string bodyString;

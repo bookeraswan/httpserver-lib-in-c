@@ -47,49 +47,51 @@ int str_get_idx(const char search[], size_t length, char raw_string[]){
     return -1;
 }
 
-std::string stringReplaceAll(std::string original, std::string from, std::string to){
-    std::string output;
-    for(int i = 0; i < original.size(); i++){
-        bool found = true;
-        int j;
-        for(j = 0; j < from.size(); j++){
-            if(i+j >= original.size()){
-                break;
+namespace stringMethods{
+
+    std::string stringReplaceAll(std::string original, std::string from, std::string to){
+        std::string output;
+        for(int i = 0; i < original.size(); i++){
+            bool found = true;
+            int j;
+            for(j = 0; j < from.size(); j++){
+                if(i+j >= original.size()){
+                    break;
+                }
+                if(original[i+j] != from[j]){
+                    found = false;
+                }
             }
-            if(original[i+j] != from[j]){
-                found = false;
+            if(found){
+                output += to;
+                i += j-1;
             }
+            else output += original[i];
         }
-        if(found){
-            output += to;
-            i += j-1;
-        }
-        else output += original[i];
+        return output;
     }
-    return output;
-}
 
-std::vector<std::string> stringSplitAtFirst(std::string s, std::string delimiter){
-    std::vector<std::string> output = std::vector<std::string>();
-    size_t pos = s.find(delimiter);
-    std::string token = s.substr(0, pos);
-    output.push_back(token);
-    s.erase(0, pos + delimiter.length());
-    output.push_back(s);
-    return output;
-}
-
-std::vector<std::string> stringSplit(std::string s, std::string delimiter){
-    size_t pos = 0;
-    std::string token;
-    std::vector<std::string> output = std::vector<std::string>();
-    while ((pos = s.find(delimiter)) != std::string::npos) {
-        token = s.substr(0, pos);
+    std::vector<std::string> stringSplitAtFirst(std::string s, std::string delimiter){
+        std::vector<std::string> output = std::vector<std::string>();
+        size_t pos = s.find(delimiter);
+        std::string token = s.substr(0, pos);
         output.push_back(token);
         s.erase(0, pos + delimiter.length());
+        output.push_back(s);
+        return output;
     }
-    output.push_back(s);
-    return output;
-}
 
+    std::vector<std::string> stringSplit(std::string s, std::string delimiter){
+        size_t pos = 0;
+        std::string token;
+        std::vector<std::string> output = std::vector<std::string>();
+        while ((pos = s.find(delimiter)) != std::string::npos) {
+            token = s.substr(0, pos);
+            output.push_back(token);
+            s.erase(0, pos + delimiter.length());
+        }
+        output.push_back(s);
+        return output;
+    }
+}
 #endif
