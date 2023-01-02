@@ -11,6 +11,7 @@ class Response{
     private:
         std::string status;
         std::string message;
+        std::string headers;
     public:
 
         Response(){
@@ -32,6 +33,22 @@ class Response{
             if(status == 404){
                 this->status = "404 Not Found";
             }
+        }
+
+        void addHeader(std::string key, std::string value){
+            headers += key + ": " + value + "\n";
+        }
+
+        std::string getHeaders(){
+            if(headers.size() != 0){
+                headers = "\n" + headers;
+            }
+            return headers;
+        }
+
+        void redirect(std::string url){
+            this->status = "303 See Other";
+            addHeader("Location", url);
         }
 
         void send_txt(std::string message){
