@@ -73,6 +73,8 @@ void infinite_server_loop(int listenfd, Router* router){
         router->router(request, response);
         snprintf(buff, sizeof(buff), "HTTP/1.1 %s%s\r\n\r\n%s", response->getStatus().c_str(), response->getHeaders().c_str(), response->getMessage().c_str());
         write(connection_socket, buff, strlen(buff));
+        write(connection_socket, response->fileBytes, response->size);
+        delete response;
         printf("\n\t----REQUEST END----\n\n");
         close(connection_socket);
     }
