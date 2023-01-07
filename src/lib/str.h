@@ -128,6 +128,10 @@ namespace stringMethods{
         return strn;
     }
 
+    bool contains(std::string s, std::string substr){
+        return s.find(substr) != std::string::npos;
+    }
+
 }
 
 #endif

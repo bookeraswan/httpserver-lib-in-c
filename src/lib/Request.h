@@ -90,7 +90,7 @@ class Request{
         std::unordered_map<std::string, std::string> headerFields;
         bool isBadRequestBool;
     public:
-        Request(char* request_str){
+        Request(std::string request_str){
             isBadRequestBool = false;
             LogColors::print(LogColors::YELLOW, "___________________________________");
             LogColors::print(LogColors::MAGENTA, request_str);
@@ -117,6 +117,7 @@ class Request{
             this->body = new Body(bodyString);
             this->header->parse();
             this->cookie = header->getCookie();
+            
         }
 
         void parseRequestLine(std::string request_str){

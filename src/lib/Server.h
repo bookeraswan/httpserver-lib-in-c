@@ -43,12 +43,14 @@ int get_content_length(char line[]){
     return atoi(value);
 }
 
-str get_request_data(int connection_socket){
-        str request_str = str_create("");
+std::string get_request_data(int connection_socket){
+        std::string request_str;
         char recvline[MAXLINE+1];
         memset(recvline, 0, MAXLINE);
         int n = read(connection_socket, recvline, MAXLINE-1);
-        str_append(&request_str, recvline);
+        while (n > 0 && !stringMethods::contains(request_str, "\r")){
+            request_str += recvline;
+        }
         return request_str;
 }
 
@@ -58,10 +60,9 @@ void infinite_server_loop(int listenfd, Router* router){
     while(1){
         connection_socket = accept(listenfd, (SA*)NULL, NULL);
         printf("\t----REQUEST BEGINNING----\n\n");
-        str request_str   = get_request_data(connection_socket);
-        if(strlen(request_str) == 0) continue;
+        std::string request_str   = get_request_data(connection_socket).c_str();
+        if(request_str.size() == 0) continue;
         Request* request   = new Request(request_str);
-        free(request_str);
         if(request->isBadRequest()){
             snprintf(buff, sizeof(buff), "HTTP/1.1 400 Bad Request\r\n\r\n");
             write(connection_socket, buff, strlen(buff));
